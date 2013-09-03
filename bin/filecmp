@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+var filecmp = require('../lib/filecmp'),
+    path = require('path'),
+    args = process.argv.slice(2),
+    binfilename = path.basename(process.argv[1]);
+
+function usage() {
+    console.log('Usage: ' + binfilename + ' [file1] [file2]');
+    process.exit(0);
+}
+
+function missingOperandError() {
+    console.error(binfilename + ': missing operand after `' + binfilename + '\'');
+    console.error(binfilename + ': Try `' + binfilename + '\' --help for more informations');
+    process.exit(2);
+}
+
+function invalidArgumentError() {
+    console.error(binfilename + ': invalid argument');
+    console.error(binfilename + ': Try `' + binfilename + '\' --help for more informations');
+    process.exit(2);
+}
+
+function noSuchFileError(path) {
+    console.error(binfilename + ': ' + path + ': No such file or directory');
+    process.exit(2);
+}
+
+function genericError(code) {
+    console.error(binfilename + ': Error ' + code);
+    process.exit(2);
+}
+
+args.forEach(function (arg) {
+    if (arg.match(/^(-h|\/h|\/help|--help|\/\?)$/))
+        usage(false);
+});
+
+if (args.length < 2) missingOperandError();
+else if (args.length > 2) invalidArgumentError();
+
+filecmp.filecmp(args[0], args[1], function (err, res) {
+    var lastError = null;
+    if (Array.isArray(err))
+        lastError = err[0];
+    else if (err)
+        lastError = err;
+    if (lastError) {
+        if (lastError.code === 'ENOENT')
+            noSuchFileError(lastError.path);
+        else
+            genericError(lastError.code);
+    }
+    if (res && res.areDifferent) {
+        console.log(args[0] + ' ' + args[1] + ' differ');
+        process.exit(2);
+    }
+});

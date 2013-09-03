@@ -1,0 +1,24 @@
+{
+    "name": "filecmp",
+    "description": "Asynchronous File and Directory Comparison",
+    "tags": ["cmp", "comparison"],
+    "version": "0.0.1",
+    "author": "Simon Rakhimov <simon.rakhimov@gmail.com>",
+    "bin": "./bin/filecmp",
+    "main": "./lib/filecmp.js",
+    "scripts": {
+        "test": "node ./node_modules/vows/bin/vows --spec"
+    },
+    "license": {
+        "type": "MIT",
+        "url": "https://github.com/simrak/filecmp/raw/master/LICENSE"
+    },
+    "repository": "git://github.com/simrak/filecmp.git",
+    "devDependencies": {
+        "vows": "0.7.x",
+        "temp": "0.5.x"
+    },
+    "dependencies": {
+        "async": "0.2.x"
+    }
+}
